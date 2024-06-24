@@ -1,35 +1,65 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import Autocomplete from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
 
-function App() {
-  const [count, setCount] = useState(0)
+const options = [
+  { id: 1, label: 'Option 1' },
+  { id: 2, label: 'Option 2' },
+  { id: 3, label: 'Option 3' }
+];
+
+function CustomAutocomplete() {
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [error, setError] = useState('');
+
+  const handleChange = (event, newValue) => {
+    if (newValue && selectedOptions.find(option => option.id === newValue.id)) {
+      setError('Already selected');
+    } else {
+      setError('');
+      setSelectedOptions([...selectedOptions, newValue]);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Autocomplete
+      options={options}
+      getOptionLabel={(option) => option.label}
+      onChange={handleChange}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
+      renderInput={(params) => (
+        <Box sx={{ position: 'relative' }}>
+          <input
+            {...params.inputProps}
+            style={{
+              width: '100%',
+              padding: '10px',
+              borderColor: error ? 'red' : 'initial',
+              borderWidth: '1px',
+              borderRadius: '4px',
+              outline: 'none'
+            }}
+            placeholder="Custom Autocomplete"
+          />
+          {error && (
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                color: 'red',
+                fontSize: '12px',
+                marginTop: '5px'
+              }}
+            >
+              {error}
+            </Box>
+          )}
+        </Box>
+      )}
+    />
+  );
 }
 
-export default App
+export default CustomAutocomplete;
+
