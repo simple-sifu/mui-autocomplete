@@ -1,65 +1,45 @@
 import React, { useState } from 'react';
-import Autocomplete from '@mui/material/Autocomplete';
-import Box from '@mui/material/Box';
+import { TextField, Autocomplete } from '@mui/material';
 
-const options = [
-  { id: 1, label: 'Option 1' },
-  { id: 2, label: 'Option 2' },
-  { id: 3, label: 'Option 3' }
-];
+const options = ['aa', 'aaa', 'abc', 'abcd'];
 
-function CustomAutocomplete() {
+function MultiSelectAutocomplete() {
   const [selectedOptions, setSelectedOptions] = useState([]);
-  const [error, setError] = useState('');
 
-  const handleChange = (event, newValue) => {
-    if (newValue && selectedOptions.find(option => option.id === newValue.id)) {
-      setError('Already selected');
-    } else {
-      setError('');
-      setSelectedOptions([...selectedOptions, newValue]);
-    }
+  const handleChange = (event, value) => {
+    console.log("Selected values:", value); // Debugging statement
+    setSelectedOptions(value);
   };
 
   return (
-    <Autocomplete
-      options={options}
-      getOptionLabel={(option) => option.label}
-      onChange={handleChange}
-      isOptionEqualToValue={(option, value) => option.id === value.id}
-      renderInput={(params) => (
-        <Box sx={{ position: 'relative' }}>
-          <input
-            {...params.inputProps}
-            style={{
-              width: '100%',
-              padding: '10px',
-              borderColor: error ? 'red' : 'initial',
-              borderWidth: '1px',
-              borderRadius: '4px',
-              outline: 'none'
-            }}
-            placeholder="Custom Autocomplete"
+    <div>
+      <Autocomplete
+        multiple
+        options={options}
+        getOptionLabel={(option) => option}
+        filterSelectedOptions
+        noOptionsText="No options"
+        value={selectedOptions}
+        onChange={handleChange}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="outlined"
+            label="Select Options"
+            placeholder="Favorites"
           />
-          {error && (
-            <Box
-              sx={{
-                position: 'absolute',
-                top: '100%',
-                left: 0,
-                color: 'red',
-                fontSize: '12px',
-                marginTop: '5px'
-              }}
-            >
-              {error}
-            </Box>
-          )}
-        </Box>
-      )}
-    />
+        )}
+      />
+      <div>
+        <h4>Selected Options:</h4>
+        <ul>
+          {selectedOptions.map((option, index) => (
+            <li key={index}>{option}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 }
 
-export default CustomAutocomplete;
-
+export default MultiSelectAutocomplete;
